@@ -2,6 +2,7 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Posts from './components/Posts';
+import Pagination from './components/Pagination';
 
 function App() {
 
@@ -21,12 +22,24 @@ function App() {
         fetchPosts();
     }, []);
 
+    // Get current posts
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+    // Change page
+    const paginate = pageNumber => setCurrentPage(pageNumber);
 
     return (
-        <div className='flex justify-center'>
-            <div>
+        <div className='flex justify-center w-1/2 mx-auto'>
+            <div className='w-full'>
                 <h1 className='font-bold text-4xl py-9 text-blue-500 text-center'>Pagination in react</h1>
-                <Posts posts = { posts }/>
+                {loading ? <h2 className='font-bold text-center text-blue-300'>Loading..</h2> : <Posts posts={ currentPosts } />}
+                <Pagination
+                    postsPerPage={ postsPerPage }
+                    totalPosts={ posts.length }
+                    paginate={ paginate }
+                />
             </div>
         </div>
     );
